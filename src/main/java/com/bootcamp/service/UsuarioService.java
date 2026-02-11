@@ -8,7 +8,7 @@ import java.util.Optional;
 public class UsuarioService {
     private final UsuarioRepository repository;
 
-    public usuarioService {
+    public UsuarioService() {
         this.repository = new UsuarioRepository();
     }
 

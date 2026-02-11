@@ -5,8 +5,6 @@ import com.bootcamp.service.UsuarioService;
 import java.util.Scanner;
 import java.util.List;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
         UsuarioService service = new UsuarioService();
@@ -21,7 +19,7 @@ public class Main {
             System.out.println("3. Buscar por ID");
             System.out.println("4. Atualizar usuário");
             System.out.println("5. Remover usuario");
-            System.out.println("0. Sair");
+            System.out.println("6. Sair");
 
             try{
                 String input = sc.nextLine();
@@ -42,11 +40,43 @@ public class Main {
                         if (usuarios.isEmpty()){
                             System.out.println("Nenhum usuário cadastrado.");
                         } else{
-
+                            usuarios.forEach(System.out::println);
                         }
                     }
+                    case 3 -> {
+                        System.out.print("\nDigite o ID: ");
+                        Long id = Long.parseLong(sc.nextLine());
+                        Usuario u = service.buscarUsuario(id);
+                        System.out.println("Encontrado: " + u);
+                    }
+                    case 4 -> {
+                        System.out.print("\nID do usuário a atualizar: ");
+                        Long id = Long.parseLong(sc.nextLine());
+                        
+                        System.out.print("Novo Nome (Enter para manter atual): ");
+                        String nome = sc.nextLine();
+                        
+                        System.out.print("Novo Email (Enter para manter atual): ");
+                        String email = sc.nextLine();
+                        
+                        service.atualizarUsuario(id, nome.isEmpty() ? null : nome, email.isEmpty() ? null : email);
+                        System.out.println("Usuário atualizado com sucesso!");
+                    }
+                    case 5 -> {
+                        System.out.print("\nID do usuário a remover: ");
+                        Long id = Long.parseLong(sc.nextLine());
+                        service.removerUsuario(id);
+                        System.out.println("Usuário removido com sucesso!");
+                    }
+                    case 6 -> System.out.println("\nEncerrando o sistema...");
+                    default -> System.out.println("Opção inválida! Tente novamente.");
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: Por favor, digite um número válido.");
+            } catch (Exception e) {
+                System.out.println("Erro: " + e.getMessage());
             }
         }
+        sc.close();
     }
 }

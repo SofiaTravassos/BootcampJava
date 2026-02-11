@@ -11,24 +11,27 @@ public class UsuarioRepository {
     private static final String PASSWORD = "";
 
     public UsuarioRepository() {
-        criartabela();
+        criarTabela();
     }
 
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(URL, USER, PASSWORD);
     };
 
-    private void criartabela() {
+    private void criarTabela() {
         String sql = """
                 CREATE TABLE IF NOT EXISTS usuario (
                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                     nome VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) NOT NULL,
+                    email VARCHAR(255) NOT NULL
+                );
                 """;
-
-        try (Connection conn = getConnection(); Statement stmt = conn.createStatement()){
+        try (Connection conn = getConnection();
+            Statement stmt = conn.createStatement()) {
             stmt.execute(sql);
+            System.out.println("DEBUG: Tabela 'usuario' criada ou verificada com sucesso!");
         } catch (SQLException e) {
+            System.out.println("ERRO CRÍTICO AO CRIAR TABELA:");
             e.printStackTrace();
         }
     }
@@ -38,10 +41,17 @@ public class UsuarioRepository {
                 INSERT INTO usuario (nome, email) VALUES (?, ?)
         """;
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
+        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getEmail());
-            stmt.executeUpdate();
+            int affected = stmt.executeUpdate();
+            if (affected > 0) {
+                try (ResultSet keys = stmt.getGeneratedKeys()){
+                    if (keys.next()){
+                        usuario.setId(keys.getLong(1));
+                    }
+                }
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -85,6 +95,27 @@ public class UsuarioRepository {
         } catch (SQLException e){
             e.printStackTrace();
         }
+    }
+
+    public Optional<Usuario> buscarPorId(Long id) {
+        String sql = "SELECT * FROM usuario WHERE id = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(new Usuario(
+                            rs.getLong("id"),
+                            rs.getString("nome"),
+                            rs.getString("email")
+                    ));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return Optional.empty();
     }
 
 }
