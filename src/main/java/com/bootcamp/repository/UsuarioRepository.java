@@ -1,12 +1,15 @@
 package com.bootcamp.repository;
+
 import com.bootcamp.model.Usuario;
+import com.bootcamp.model.Funcionario;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class UsuarioRepository {
-    private static final String URL = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1";
+    private static final String URL = "jdbc:h2:file:~/bootcamp_db";
     private static final String USER = "sa";
     private static final String PASSWORD = "";
 
@@ -19,15 +22,17 @@ public class UsuarioRepository {
     };
 
     private void criarTabela() {
-        String sql = """
+        var sql = """
                 CREATE TABLE IF NOT EXISTS usuario (
                     id BIGINT AUTO_INCREMENT PRIMARY KEY,
                     nome VARCHAR(255) NOT NULL,
-                    email VARCHAR(255) NOT NULL
+                    email VARCHAR(255) NOT NULL,
+                    cargo VARCHAR(255),
+                    tipo_usuario VARCHAR(50)
                 );
                 """;
-        try (Connection conn = getConnection();
-            Statement stmt = conn.createStatement()) {
+        try (var conn = getConnection();
+            var stmt = conn.createStatement()) {
             stmt.execute(sql);
             System.out.println("DEBUG: Tabela 'usuario' criada ou verificada com sucesso!");
         } catch (SQLException e) {
@@ -37,16 +42,26 @@ public class UsuarioRepository {
     }
 
     public void salvar(Usuario usuario) {
-        String sql = """
-                INSERT INTO usuario (nome, email) VALUES (?, ?)
+        var sql = """
+                INSERT INTO usuario (nome, email, cargo, tipo_usuario) VALUES (?, ?, ?, ?)
         """;
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+        try (var conn = getConnection(); var stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getEmail());
+
+            if (usuario instanceof Funcionario funcionario){
+                stmt.setString(3, funcionario.getCargo());
+                stmt.setString(4, "FUNCIONARIO");
+            } else{
+                stmt.setNull(3, Types.VARCHAR);
+                stmt.setString(4, "USUARIO");
+            }
+
             int affected = stmt.executeUpdate();
             if (affected > 0) {
-                try (ResultSet keys = stmt.getGeneratedKeys()){
+                try (var keys = stmt.getGeneratedKeys()){
                     if (keys.next()){
                         usuario.setId(keys.getLong(1));
                     }
@@ -58,12 +73,12 @@ public class UsuarioRepository {
     }
 
     public List<Usuario> listarTodos() {
-        List<Usuario> usuarios = new ArrayList<>();
+        var usuarios = new ArrayList<Usuario>();
         String sql = "SELECT * FROM usuario";
 
-        try (Connection conn = getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)){
+        try (var conn = getConnection(); var stmt = conn.createStatement(); var rs = stmt.executeQuery(sql)){
             while(rs.next()) {
-                usuarios.add(new Usuario(rs.getLong("id"), rs.getString("nome"), rs.getString("email")));
+                usuarios.add(mapearUsuario(rs));
             }
         } catch (SQLException e){
             e.printStackTrace();
@@ -72,14 +87,21 @@ public class UsuarioRepository {
     }
 
     public void atualizar(Usuario usuario) {
-        String sql = """
-                UPDATE usuario SET nome = ?, email = ? WHERE id = ?;
+        var sql = """
+                UPDATE usuario SET nome = ?, email = ?, cargo = ?  WHERE id = ?;
         """;
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
+        try (var conn = getConnection(); var stmt = conn.prepareStatement(sql)){
             stmt.setString(1, usuario.getNome());
             stmt.setString(2, usuario.getEmail());
-            stmt.setLong(3, usuario.getId());
+
+            if (usuario instanceof Funcionario f){
+                stmt.setString(3, f.getCargo());
+            } else{
+                stmt.setNull(3, Types.VARCHAR);
+            }
+
+            stmt.setLong(4, usuario.getId());
             stmt.executeUpdate();
         } catch (SQLException e){
             e.printStackTrace();
@@ -87,9 +109,9 @@ public class UsuarioRepository {
     }
 
     public void remover(Long id) {
-        String sql = "DELETE FROM usuario WHERE id = ?";
+        var sql = "DELETE FROM usuario WHERE id = ?";
 
-        try (Connection conn = getConnection(); PreparedStatement stmt = conn.prepareStatement(sql)){
+        try (var conn = getConnection(); var stmt = conn.prepareStatement(sql)){
             stmt.setLong(1, id);
             stmt.executeUpdate();
         } catch (SQLException e){
@@ -98,12 +120,12 @@ public class UsuarioRepository {
     }
 
     public Optional<Usuario> buscarPorId(Long id) {
-        String sql = "SELECT * FROM usuario WHERE id = ?";
+        var sql = "SELECT * FROM usuario WHERE id = ?";
 
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (var conn = getConnection();
+             var stmt = conn.prepareStatement(sql)) {
             stmt.setLong(1, id);
-            try (ResultSet rs = stmt.executeQuery()) {
+            try (var rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return Optional.of(new Usuario(
                             rs.getLong("id"),
@@ -118,4 +140,17 @@ public class UsuarioRepository {
         return Optional.empty();
     }
 
+    private Usuario mapearUsuario(ResultSet rs) throws SQLException {
+        long id = rs.getLong("id");
+        String nome = rs.getString("nome");
+        String email = rs.getString("email");
+        String cargo = rs.getString("cargo");
+        String tipo = rs.getString("tipo_usuario");
+
+        if ("FUNCIONARIO".equals(tipo)){
+            return new Funcionario(id, nome, email, cargo);
+        } else{
+            return new Usuario(id, nome, email);
+        }
+    }
 }

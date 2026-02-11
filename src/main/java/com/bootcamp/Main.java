@@ -1,13 +1,15 @@
 package com.bootcamp;
 
 import com.bootcamp.model.Usuario;
+import com.bootcamp.repository.UsuarioRepository;
 import com.bootcamp.service.UsuarioService;
 import java.util.Scanner;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        UsuarioService service = new UsuarioService();
+        UsuarioRepository repository = new UsuarioRepository();
+        UsuarioService service = new UsuarioService(repository);
         Scanner sc = new Scanner(System.in);
         int opcao = 0;
 
@@ -18,7 +20,7 @@ public class Main {
             System.out.println("2. Listar todos os usuários");
             System.out.println("3. Buscar por ID");
             System.out.println("4. Atualizar usuário");
-            System.out.println("5. Remover usuario");
+            System.out.println("5. Remover usuário");
             System.out.println("6. Sair");
 
             try{
@@ -27,12 +29,26 @@ public class Main {
 
                 switch (opcao){
                     case 1 ->{
+                        System.out.println("\nXX TIPO DE CADASTRO XX");
+                        System.out.println("1. Usuário comum");
+                        System.out.println("2. Funcionário");
+                        System.out.print("Escolha o tipo: ");
+                        int tipo = Integer.parseInt(sc.nextLine());
+
                         System.out.println("\nDigite o nome: ");
                         String nome = sc.nextLine();
                         System.out.println("Digite o email: ");
                         String email = sc.nextLine();
-                        service.criarUsuario(nome, email);
-                        System.out.println("Usuario criado!");
+
+                        if (tipo == 2){
+                            System.out.println("Digite o cargo: ");
+                            String cargo = sc.nextLine();
+                            service.criarFuncionario(nome, email, cargo);
+                            System.out.println("Funcionário criado!");
+                        } else{
+                            service.criarUsuario(nome, email);
+                            System.out.println("Usuário comum criado!");
+                        }
                     }
                     case 2 ->{
                         System.out.println("\nXX LISTA DE USUÁRIOS XX");
