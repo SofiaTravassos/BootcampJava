@@ -1,7 +1,15 @@
 package com.bootcamp.model;
 
+import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Entity;
+
+@Entity
+@DiscriminatorValue("FUNCIONARIO")
 public class Funcionario extends Usuario{
     private String cargo;
+
+    public Funcionario() {
+    }
 
     public Funcionario(Long id, String nome, String email, String cargo) {
         super(id, nome, email);
