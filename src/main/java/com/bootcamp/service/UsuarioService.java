@@ -6,6 +6,9 @@ import com.bootcamp.repository.UsuarioRepository;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public class UsuarioService {
     private final UsuarioRepository repository;
 

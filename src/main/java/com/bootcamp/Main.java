@@ -1,15 +1,29 @@
 package com.bootcamp;
 
 import com.bootcamp.model.Usuario;
-import com.bootcamp.repository.UsuarioRepository;
 import com.bootcamp.service.UsuarioService;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
 import java.util.Scanner;
 import java.util.List;
 
-public class Main {
+@SpringBootApplication
+public class Main implements CommandLineRunner {
+
+    private final UsuarioService service;
+
+    public Main(UsuarioService service) {
+        this.service = service;
+    }
+
     public static void main(String[] args) {
-        UsuarioRepository repository = new UsuarioRepository();
-        UsuarioService service = new UsuarioService(repository);
+        SpringApplication.run(Main.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
         Scanner sc = new Scanner(System.in);
         int opcao = 0;
 
