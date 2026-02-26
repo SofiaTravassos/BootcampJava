@@ -1,126 +1,127 @@
 package com.bootcamp;
 
-import com.bootcamp.model.Usuario;
-import com.bootcamp.service.UsuarioService;
-import org.springframework.boot.CommandLineRunner;
+// import com.bootcamp.model.Usuario;
+// import com.bootcamp.service.UsuarioService;
+// import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.Scanner;
-import java.util.List;
+// import java.util.Scanner;
+// import java.util.List;
 
 @SpringBootApplication
-public class Main implements CommandLineRunner {
+public class Main {
 
-    private final UsuarioService service;
+    // private final UsuarioService service;
 
-    public Main(UsuarioService service) {
-        this.service = service;
-    }
+    // public Main(UsuarioService service) {
+    //     this.service = service;
+    // }
 
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
+        System.out.println("Servidor Web a rodar! Acesse: http://localhost:8080");
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        Scanner sc = new Scanner(System.in);
-        int opcao = 0;
+    // @Override
+    // public void run(String... args) throws Exception {
+    //     Scanner sc = new Scanner(System.in);
+    //     int opcao = 0;
 
-        while(opcao!=8){
-            System.out.println("\nXX GERENCIAMENTO DE USUÁRIOS XX");
-            System.out.println("-- Escolha uma opção: --");
-            System.out.println("1. Criar usuário");
-            System.out.println("2. Listar todos os usuários");
-            System.out.println("3. Buscar por ID");
-            System.out.println("4. Buscar por Email");
-            System.out.println("5. Buscar por Nome");
-            System.out.println("6. Atualizar usuário");
-            System.out.println("7. Remover usuário");
-            System.out.println("8. Sair");
+    //     while(opcao!=8){
+    //         System.out.println("\nXX GERENCIAMENTO DE USUÁRIOS XX");
+    //         System.out.println("-- Escolha uma opção: --");
+    //         System.out.println("1. Criar usuário");
+    //         System.out.println("2. Listar todos os usuários");
+    //         System.out.println("3. Buscar por ID");
+    //         System.out.println("4. Buscar por Email");
+    //         System.out.println("5. Buscar por Nome");
+    //         System.out.println("6. Atualizar usuário");
+    //         System.out.println("7. Remover usuário");
+    //         System.out.println("8. Sair");
 
-            try{
-                String input = sc.nextLine();
-                opcao = Integer.parseInt(input);
+    //         try{
+    //             String input = sc.nextLine();
+    //             opcao = Integer.parseInt(input);
 
-                switch (opcao){
-                    case 1 ->{
-                        System.out.println("\nXX TIPO DE CADASTRO XX");
-                        System.out.println("1. Usuário comum");
-                        System.out.println("2. Funcionário");
-                        System.out.print("Escolha o tipo: ");
-                        int tipo = Integer.parseInt(sc.nextLine());
+    //             switch (opcao){
+    //                 case 1 ->{
+    //                     System.out.println("\nXX TIPO DE CADASTRO XX");
+    //                     System.out.println("1. Usuário comum");
+    //                     System.out.println("2. Funcionário");
+    //                     System.out.print("Escolha o tipo: ");
+    //                     int tipo = Integer.parseInt(sc.nextLine());
 
-                        System.out.println("\nDigite o nome: ");
-                        String nome = sc.nextLine();
-                        System.out.println("Digite o email: ");
-                        String email = sc.nextLine();
+    //                     System.out.println("\nDigite o nome: ");
+    //                     String nome = sc.nextLine();
+    //                     System.out.println("Digite o email: ");
+    //                     String email = sc.nextLine();
 
-                        if (tipo == 2){
-                            System.out.println("Digite o cargo: ");
-                            String cargo = sc.nextLine();
-                            service.criarFuncionario(nome, email, cargo);
-                            System.out.println("Funcionário criado!");
-                        } else{
-                            service.criarUsuario(nome, email);
-                            System.out.println("Usuário comum criado!");
-                        }
-                    }
-                    case 2 ->{
-                        System.out.println("\nXX LISTA DE USUÁRIOS XX");
-                        List<Usuario> usuarios = service.listarUsuarios();
-                        if (usuarios.isEmpty()){
-                            System.out.println("Nenhum usuário cadastrado.");
-                        } else{
-                            usuarios.forEach(System.out::println);
-                        }
-                    }
-                    case 3 -> {
-                        System.out.print("\nDigite o ID: ");
-                        Long id = Long.parseLong(sc.nextLine());
-                        Usuario u = service.buscarUsuario(id);
-                        System.out.println("Encontrado: " + u);
-                    }
-                    case 4 -> {
-                        System.out.print("\nDigite o Email: ");
-                        String emailBusca = sc.nextLine();
-                        Usuario uEmail = service.buscarUsuarioPorEmail(emailBusca);
-                        System.out.println("Encontrado: " + uEmail);
-                    }
-                    case 5 -> {
-                        System.out.print("\nDigite o Nome: ");
-                        String nomeBusca = sc.nextLine();
-                        Usuario uNome = service.buscarUsuarioPorNome(nomeBusca);
-                        System.out.println("Encontrado: " + uNome);
-                    }
-                    case 6 -> {
-                        System.out.print("\nID do usuário a atualizar: ");
-                        Long id = Long.parseLong(sc.nextLine());
+    //                     if (tipo == 2){
+    //                         System.out.println("Digite o cargo: ");
+    //                         String cargo = sc.nextLine();
+    //                         service.criarFuncionario(nome, email, cargo);
+    //                         System.out.println("Funcionário criado!");
+    //                     } else{
+    //                         service.criarUsuario(nome, email);
+    //                         System.out.println("Usuário comum criado!");
+    //                     }
+    //                 }
+    //                 case 2 ->{
+    //                     System.out.println("\nXX LISTA DE USUÁRIOS XX");
+    //                     List<Usuario> usuarios = service.listarUsuarios();
+    //                     if (usuarios.isEmpty()){
+    //                         System.out.println("Nenhum usuário cadastrado.");
+    //                     } else{
+    //                         usuarios.forEach(System.out::println);
+    //                     }
+    //                 }
+    //                 case 3 -> {
+    //                     System.out.print("\nDigite o ID: ");
+    //                     Long id = Long.parseLong(sc.nextLine());
+    //                     Usuario u = service.buscarUsuario(id);
+    //                     System.out.println("Encontrado: " + u);
+    //                 }
+    //                 case 4 -> {
+    //                     System.out.print("\nDigite o Email: ");
+    //                     String emailBusca = sc.nextLine();
+    //                     Usuario uEmail = service.buscarUsuarioPorEmail(emailBusca);
+    //                     System.out.println("Encontrado: " + uEmail);
+    //                 }
+    //                 case 5 -> {
+    //                     System.out.print("\nDigite o Nome: ");
+    //                     String nomeBusca = sc.nextLine();
+    //                     Usuario uNome = service.buscarUsuarioPorNome(nomeBusca);
+    //                     System.out.println("Encontrado: " + uNome);
+    //                 }
+    //                 case 6 -> {
+    //                     System.out.print("\nID do usuário a atualizar: ");
+    //                     Long id = Long.parseLong(sc.nextLine());
                         
-                        System.out.print("Novo Nome (Enter para manter atual): ");
-                        String nome = sc.nextLine();
+    //                     System.out.print("Novo Nome (Enter para manter atual): ");
+    //                     String nome = sc.nextLine();
                         
-                        System.out.print("Novo Email (Enter para manter atual): ");
-                        String email = sc.nextLine();
+    //                     System.out.print("Novo Email (Enter para manter atual): ");
+    //                     String email = sc.nextLine();
                         
-                        service.atualizarUsuario(id, nome.isEmpty() ? null : nome, email.isEmpty() ? null : email);
-                        System.out.println("Usuário atualizado com sucesso!");
-                    }
-                    case 7 -> {
-                        System.out.print("\nID do usuário a remover: ");
-                        Long id = Long.parseLong(sc.nextLine());
-                        service.removerUsuario(id);
-                        System.out.println("Usuário removido com sucesso!");
-                    }
-                    case 8 -> System.out.println("\nEncerrando o sistema...");
-                    default -> System.out.println("Opção inválida! Tente novamente.");
-                }
-            } catch (NumberFormatException e) {
-                System.out.println("Erro: Por favor, digite um número válido.");
-            } catch (Exception e) {
-                System.out.println("Erro: " + e.getMessage());
-            }
-        }
-        sc.close();
-    }
+    //                     service.atualizarUsuario(id, nome.isEmpty() ? null : nome, email.isEmpty() ? null : email);
+    //                     System.out.println("Usuário atualizado com sucesso!");
+    //                 }
+    //                 case 7 -> {
+    //                     System.out.print("\nID do usuário a remover: ");
+    //                     Long id = Long.parseLong(sc.nextLine());
+    //                     service.removerUsuario(id);
+    //                     System.out.println("Usuário removido com sucesso!");
+    //                 }
+    //                 case 8 -> System.out.println("\nEncerrando o sistema...");
+    //                 default -> System.out.println("Opção inválida! Tente novamente.");
+    //             }
+    //         } catch (NumberFormatException e) {
+    //             System.out.println("Erro: Por favor, digite um número válido.");
+    //         } catch (Exception e) {
+    //             System.out.println("Erro: " + e.getMessage());
+    //         }
+    //     }
+    //     sc.close();
+    // }
 }
