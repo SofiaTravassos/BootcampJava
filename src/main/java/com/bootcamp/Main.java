@@ -27,15 +27,17 @@ public class Main implements CommandLineRunner {
         Scanner sc = new Scanner(System.in);
         int opcao = 0;
 
-        while(opcao!=6){
+        while(opcao!=8){
             System.out.println("\nXX GERENCIAMENTO DE USUÁRIOS XX");
             System.out.println("-- Escolha uma opção: --");
             System.out.println("1. Criar usuário");
             System.out.println("2. Listar todos os usuários");
             System.out.println("3. Buscar por ID");
-            System.out.println("4. Atualizar usuário");
-            System.out.println("5. Remover usuário");
-            System.out.println("6. Sair");
+            System.out.println("4. Buscar por Email");
+            System.out.println("5. Buscar por Nome");
+            System.out.println("6. Atualizar usuário");
+            System.out.println("7. Remover usuário");
+            System.out.println("8. Sair");
 
             try{
                 String input = sc.nextLine();
@@ -80,6 +82,18 @@ public class Main implements CommandLineRunner {
                         System.out.println("Encontrado: " + u);
                     }
                     case 4 -> {
+                        System.out.print("\nDigite o Email: ");
+                        String emailBusca = sc.nextLine();
+                        Usuario uEmail = service.buscarUsuarioPorEmail(emailBusca);
+                        System.out.println("Encontrado: " + uEmail);
+                    }
+                    case 5 -> {
+                        System.out.print("\nDigite o Nome: ");
+                        String nomeBusca = sc.nextLine();
+                        Usuario uNome = service.buscarUsuarioPorNome(nomeBusca);
+                        System.out.println("Encontrado: " + uNome);
+                    }
+                    case 6 -> {
                         System.out.print("\nID do usuário a atualizar: ");
                         Long id = Long.parseLong(sc.nextLine());
                         
@@ -92,13 +106,13 @@ public class Main implements CommandLineRunner {
                         service.atualizarUsuario(id, nome.isEmpty() ? null : nome, email.isEmpty() ? null : email);
                         System.out.println("Usuário atualizado com sucesso!");
                     }
-                    case 5 -> {
+                    case 7 -> {
                         System.out.print("\nID do usuário a remover: ");
                         Long id = Long.parseLong(sc.nextLine());
                         service.removerUsuario(id);
                         System.out.println("Usuário removido com sucesso!");
                     }
-                    case 6 -> System.out.println("\nEncerrando o sistema...");
+                    case 8 -> System.out.println("\nEncerrando o sistema...");
                     default -> System.out.println("Opção inválida! Tente novamente.");
                 }
             } catch (NumberFormatException e) {

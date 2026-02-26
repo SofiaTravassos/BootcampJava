@@ -24,7 +24,7 @@ public class UsuarioService {
             throw new IllegalArgumentException("Email é obrigatório!");
         }
 
-        repository.salvar(new Usuario(nome, email));
+        repository.save(new Usuario(nome, email));
     }
 
     public void criarFuncionario(String nome, String email, String cargo){
@@ -39,19 +39,19 @@ public class UsuarioService {
             throw new IllegalArgumentException("Email é obrigatório!");
         }
 
-        repository.salvar(new Funcionario(nome, email, cargo));
+        repository.save(new Funcionario(nome, email, cargo));
     }
 
     public List<Usuario> listarUsuarios(){
-        return repository.listarTodos();
+        return repository.findAll();
     }
 
     public Usuario buscarUsuario(Long id){
-        return repository.buscarPorId(id).orElseThrow(() -> new RuntimeException("Usuario não encontrado!"));
+        return repository.findById(id).orElseThrow(() -> new RuntimeException("Usuario com id " + id + " não encontrado!"));
     }
 
     public void atualizarUsuario(Long id, String novoNome, String novoEmail){
-        Optional<Usuario> usuarioOpt = repository.buscarPorId(id);
+        Optional<Usuario> usuarioOpt = repository.findById(id);
 
         if(usuarioOpt.isPresent()){
             Usuario usuario = usuarioOpt.get();
@@ -61,17 +61,34 @@ public class UsuarioService {
             if(novoEmail != null && !novoEmail.isEmpty()){
                 usuario.setEmail(novoEmail);
             }
-            repository.atualizar(usuario);
+            repository.save(usuario); 
         } else{
-            throw new RuntimeException("Usuário não encontrado!");
+            throw new RuntimeException("Usuário com id " + id + " não encontrado!");
         }
     }
 
     public void removerUsuario(Long id){
-        if(repository.buscarPorId(id).isPresent()){
-            repository.remover(id);
+        if(repository.existsById(id)){
+            repository.deleteById(id);
         } else{
-            throw new RuntimeException("Usuário não encontrado!");
+            throw new RuntimeException("Usuário com id " + id + " não encontrado!");
         }
     }
+
+    public Usuario buscarUsuarioPorEmail(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("Email não pode estar vazio!");
+        }
+        return repository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário com email " + email + " não encontrado!"));
+    }
+
+        public Usuario buscarUsuarioPorNome(String nome) {
+        if (nome == null || nome.isBlank()) {
+            throw new IllegalArgumentException("Nome não pode estar vazio!");
+        }
+        return repository.findByNome(nome)
+                .orElseThrow(() -> new RuntimeException("Usuário com nome " + nome + " não encontrado!"));
+    }
+
 }
