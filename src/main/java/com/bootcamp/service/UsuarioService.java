@@ -83,7 +83,7 @@ public class UsuarioService {
                 .orElseThrow(() -> new RuntimeException("Usuário com email " + email + " não encontrado!"));
     }
 
-        public Usuario buscarUsuarioPorNome(String nome) {
+    public Usuario buscarUsuarioPorNome(String nome) {
         if (nome == null || nome.isBlank()) {
             throw new IllegalArgumentException("Nome não pode estar vazio!");
         }
